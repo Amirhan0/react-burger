@@ -19,10 +19,16 @@ export default function Login() {
               </p>
             </div>
             <div className="flex flex-col m-4 gap-3">
-              <button className="w-80 bg-yellow-300 rounded-lg p-4 text-black text-xl" onClick={() => navigation('/authorization')}>
+              <button
+                className="w-80 bg-yellow-300 rounded-lg p-4 text-black text-xl font-bold"
+                onClick={() => navigation("/authorization")}
+              >
                 Войти
               </button>
-              <button className="w-80 bg-white text-yellow-500 rounded-lg p-4 text-xl" onClick={() => navigation('/registration')}>
+              <button
+                className="w-80 bg-white text-yellow-500 rounded-lg p-4 text-xl"
+                onClick={() => navigation("/registration")}
+              >
                 Зарегистрироваться
               </button>
             </div>

@@ -1,7 +1,9 @@
 export function Authorization() {
   return (
     <>
-      <h1>Войти</h1>
+    <h1>
+        Войти
+    </h1>
     </>
   );
 }
