@@ -52,6 +52,13 @@ export default function Registration() {
         passwordUser: password,
       });
       console.log("Пользователь зарегистрирован", response.data);
+      if (response.data && response.data.id) {
+        localStorage.setItem("userId", response.data.id);
+        console.log("ID сохранен в localStorage:", response.data.id);
+      } else {
+        console.log("ID не найден в ответе сервера");
+      }
+
       navigation("/fullname");
     } catch (error) {
       console.log(error);

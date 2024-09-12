@@ -4,6 +4,7 @@ import Authorization from "../pages/authorization/Authorization";
 import Registration from "../pages/registration/Registration";
 import FullName from "../pages/fullname/Fullname";
 import Success from "../pages/success/Success";
+import Main from "../components/MainComponents/Main";
 export default function AppRouter() {
   return (
     <Routes>
@@ -12,6 +13,7 @@ export default function AppRouter() {
       <Route path="/authorization" element={<Authorization />} />
       <Route path="/fullname" element={<FullName />} />
       <Route path="/success" element={<Success />} />
+      <Route path="/mainpage" element={<Main />} />
     </Routes>
   );
 }
