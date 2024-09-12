@@ -61,6 +61,26 @@ app.post("/update-profile", (req, res) => {
   });
 });
 
+app.post("/login", (req, res) => {
+  const { email, passwordUser } = req.body;
+
+  if (!email || !passwordUser) {
+    return res.status(400).json({ message: "Все поля обязательны!" });
+  }
+
+  const query = "SELECT * FROM users WHERE email = ? AND passwordUser = ?";
+
+  db.query(query, [email, passwordUser], (err, result) => {
+    if (err) {
+      console.log("Ошибка при входе в профиль", err);
+      return res
+        .status(500)
+        .json({ message: "Ошибка при входе в свой профиль" });
+    }
+    res.status(200).json({ message: "Успешный вход в свой профиль" });
+  });
+});
+
 //////////////////////-- get --///////////////////////////////////////////
 
 app.get("/users", (req, res) => {

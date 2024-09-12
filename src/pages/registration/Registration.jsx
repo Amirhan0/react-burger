@@ -70,7 +70,7 @@ export default function Registration() {
       <div className="absolute inset-0 bg-gray-900 opacity-80"></div>
       <div className="flex flex-col justify-evenly items-center h-screen">
         <div className="relative flex flex-col justify-center items-center">
-          <h1 className="font-ar-cena text-4xl font-bold">BURGER BAR</h1>
+          <h1 className="font-ar-cena text-4xl font-bold" onClick={() => navigation('/')}>BURGER BAR</h1>
         </div>
         <div className="relative flex flex-col">
           <div className="relative flex flex-col items-center justify-center pb-10">

@@ -1,7 +1,33 @@
+import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Authorization() {
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  function handleEmail(event) {
+    setEmail(event.target.value);
+  }
+
+  function handlePassword(event) {
+    setPassword(event.target.value);
+  }
+
+  const submitHandle = async () => {
+    try {
+      const response = await axios.post("http://localhost:3001/login", {
+        email,
+        passwordUser: password,
+      });
+      console.log("Успешный вход", response.data);
+      navigation("/mainpage");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   function navigation(link) {
     navigate(link);
@@ -23,34 +49,29 @@ export default function Authorization() {
             <h2 className="font-bold text-2xl">Войдите в свой профиль</h2>
             <p className="text-[#6C7072] text-sm">Войдите, чтобы продолжить</p>
           </div>
-          {/* inputs */}
+
           <div className="gap-3 flex flex-col ">
-            {/* инпут 1 */}
             <div className="bg-[#22222A]  py-4 w-full rounded-xl flex px-3 gap-4 items-center">
-              <img src="/paperPlane.svg" alt="" />
+              <img src="/PaperPlane.svg" alt="" />
               <input
                 type="text"
                 placeholder="Введите почту"
+                value={email}
+                onChange={handleEmail}
                 className="outline-none bg-transparent flex pb-[3px] w-full placeholder-white"
               />
             </div>
-
-            {/* инпут 2 */}
             <div className="bg-[#22222A]  py-4 w-full rounded-xl flex px-3 gap-4 items-center">
               <img src="/Shield.svg" alt="" />
               <input
-                type="text"
+                type="password"
                 placeholder="Введите пароль"
+                value={password}
+                onChange={handlePassword}
                 className="outline-none bg-transparent flex pb-[3px] w-full placeholder-white"
               />
               <img src="/eye-off.svg" alt="" />
             </div>
-          </div>
-          <div className="flex flex-col mt-5">
-            {/* <ul className="list-disc pl-5 text-sm text-[#1EC625]">
-            <li>Пароль содержит более 3 символов</li>
-            <li>Введены специальные символы</li>
-          </ul> */}
           </div>
         </div>
         <div className="flex flex-col gap-4 relative">
@@ -58,7 +79,10 @@ export default function Authorization() {
             Забыли пароль?
           </button>
 
-          <button className="bg-custom-gradient w-80 p-3 text-black font-bold rounded-full outline-none text-xl">
+          <button
+            className="bg-custom-gradient w-80 p-3 text-black font-bold rounded-full outline-none text-xl"
+            onClick={submitHandle}
+          >
             Войти
           </button>
         </div>
