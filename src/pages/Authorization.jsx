@@ -7,7 +7,7 @@ export default function Authorization() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState("");
   function handleEmail(event) {
     setEmail(event.target.value);
   }
@@ -23,14 +23,20 @@ export default function Authorization() {
         passwordUser: password,
       });
       console.log("Успешный вход", response.data);
-      navigation("/mainpage");
+      setErrorMessage("");
+      navigate("/home");
     } catch (error) {
-      console.log(error);
+      if (error.response && error.response.status === 401) {
+        setErrorMessage("Неправильный email или пароль");
+      } else {
+        setErrorMessage("Ошибка сервера. Попробуйте позже.");
+      }
+      console.error("Ошибка при авторизации:", error);
     }
   };
 
   function navigation(link) {
-    navigate(link);
+    navigate("/");
   }
   return (
     <div className="relative flex flex-col bg-[url('/bg.JPG')] w-screen h-screen justify-center items-center text-white  px-6 py-14">

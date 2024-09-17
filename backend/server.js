@@ -63,23 +63,27 @@ app.post("/update-profile", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, passwordUser } = req.body;
-
-  if (!email || !passwordUser) {
-    return res.status(400).json({ message: "Все поля обязательны!" });
-  }
+  console.log("Полученные данные:", email, passwordUser);
 
   const query = "SELECT * FROM users WHERE email = ? AND passwordUser = ?";
 
   db.query(query, [email, passwordUser], (err, result) => {
     if (err) {
-      console.log("Ошибка при входе в профиль", err);
-      return res
-        .status(500)
-        .json({ message: "Ошибка при входе в свой профиль" });
+      console.log("Ошибка при запросе к базе данных:", err);
+      return res.status(500).json({ message: "Ошибка сервера" });
     }
+
+    console.log("Результат запроса:", result);
+
+    if (result.length === 0) {
+      return res.status(401).json({ message: "Неправильный email или пароль" });
+    }
+
     res.status(200).json({ message: "Успешный вход в свой профиль" });
   });
 });
+
+
 
 //////////////////////-- get --///////////////////////////////////////////
 

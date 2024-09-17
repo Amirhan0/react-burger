@@ -1,0 +1,77 @@
+import { useNavigate } from "react-router-dom";
+
+const HeaderMain = () => {
+  const navigate = useNavigate();
+
+  function navigation(link) {
+    navigate(link);
+  }
+  return (
+    <header className="fixed bottom-0 left-0 w-full bg-[#18171C] p-4 rounded-t-2xl shadow-lg">
+      <div className="flex justify-around items-center h-full">
+        <div className="flex items-center p-2 rounded-full">
+          <div
+            className=" flex items-center justify-center"
+            onClick={() => navigation("/home")}
+          >
+            <img
+              src="/home.svg"
+              alt="Home"
+              className="w-8 h-8 sm:w-10 sm:h-10"
+            />
+          </div>
+        </div>
+        <div className="flex items-center p-2 rounded-full">
+          <div
+            className="flex items-center justify-center"
+            onClick={() => navigation("/orders")}
+          >
+            <img
+              src="/orders.svg"
+              alt="Orders"
+              className="w-8 h-8 sm:w-10 sm:h-10"
+            />
+          </div>
+        </div>
+        <div className="flex items-center  p-2 rounded-full">
+          <div
+            className="w-14 h-14 bg-[#B28C2E] flex items-center justify-center rounded-lg"
+            onClick={() => navigation("/checkout")}
+          >
+            <img
+              src="/cart.svg"
+              alt="Cart"
+              className="w-8 h-8 sm:w-10 sm:h-10"
+            />
+          </div>
+        </div>
+        <div className="flex items-center p-2 rounded-full">
+          <div
+            className="flex items-center justify-center "
+            onClick={() => navigation("/favorite")}
+          >
+            <img
+              src="/favorite.svg"
+              alt="Favorite"
+              className="w-8 h-8 sm:w-10 sm:h-10"
+            />
+          </div>
+        </div>
+        <div className="flex items-center  p-2 rounded-full">
+          <div
+            className="flex items-center justify-center "
+            onClick={() => navigation("/profile")}
+          >
+            <img
+              src="/profile.svg"
+              alt="Profile"
+              className="w-8 h-8 sm:w-10 sm:h-10"
+            />
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default HeaderMain;
