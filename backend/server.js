@@ -83,9 +83,71 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/products", (req, res) => {
+  const { nameProduct, description, price, weight, image } = req.body;
 
+  const query =
+    "INSERT INTO products (nameProduct, description, price, weight, image) VALUES (?,?,?,?,?)";
+
+  db.query(
+    query,
+    [nameProduct, description, price, weight, image],
+    (err, result) => {
+      if (err) {
+        console.log("Ошибка при добавление товара", err);
+        return res
+          .status(500)
+          .json({ message: "Ошибка при добавление товара" });
+      }
+      res.status(200).json({ message: "Товар успешно добавлен" });
+    }
+  );
+});
+
+app.post("/categoryes", (req, res) => {
+  const { categoryName, imageCategory } = req.body;
+
+  const query =
+    "INSERT INTO category (categoryName, imageCategory) VALUES (?, ?)";
+
+  db.query(query, [categoryName, imageCategory], (err, result) => {
+    if (err) {
+      console.log("Ошибка при добавление категории", err);
+      return res
+        .status(500)
+        .json({ message: "Ошибка при добавлении катгеории" });
+    }
+    res.status(200).json({ message: "Товар успешно добавлен" });
+  });
+});
 
 //////////////////////-- get --///////////////////////////////////////////
+app.get("/categoryes", (req, res) => {
+  const query = "SELECT categoryName, imageCategory FROM category";
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.log("Ошибка при получении списка категорий:", err);
+      return res
+        .status(500)
+        .json({ message: "Ошибка при получении категорий" });
+    }
+    res.status(200).json(result);
+  });
+});
+
+app.get("/products", (req, res) => {
+  const query =
+    "SELECT id, nameProduct, description, price, weight, image FROM products";
+
+  db.query(query, (err, result) => {
+    if (err) {
+      console.log("Ошибка при получении списка товаров:", err);
+      return res.status(500).json({ message: "Ошибка при получении товаров" });
+    }
+    res.status(200).json(result);
+  });
+});
 
 app.get("/users", (req, res) => {
   const query =

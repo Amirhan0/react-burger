@@ -6,7 +6,7 @@ import HeaderMain from "./HeaderMain";
 const MainPage = () => {
   return (
     <>
-      <div className="bg-[#111015] h-full">
+      <div className="bg-[#111015] min-h-screen pb-24">
         <HeaderWelcome></HeaderWelcome>
         <Favorites></Favorites>
         <Category></Category>

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import HeaderMain from "../components/HeaderMain";
 
 const Profile = () => {
@@ -27,14 +28,18 @@ const Profile = () => {
       description: "Ваши данные никто не украдет",
     },
   ];
+  const navigate = useNavigate();
 
+  function navigation(link) {
+    navigate(link);
+  }
   return (
     <>
       <div className="bg-[#18171C] h-screen">
         <div className="p-6">
           <div className="flex justify-between items-center">
             <div className="bg-custom-gradient w-10 h-10 rounded-xl flex justify-center items-center">
-              <img src="/Back.svg" alt="" onClick={() => navigation("/")} />
+              <img src="/Back.svg" alt="" onClick={() => navigation("/home")} />
             </div>
             <h1 className="font-bold text-3xl text-white">Профиль</h1>
           </div>
