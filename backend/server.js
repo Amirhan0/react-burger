@@ -149,6 +149,26 @@ app.get("/products", (req, res) => {
   });
 });
 
+app.get("/products/:id", (req, res) => {
+  const { id } = req.params;
+
+  const query = "SELECT * FROM products WHERE id = ?";
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      console.log("Ошибка при получении продукта:", err);
+      return res.status(500).json({ message: "Ошибка сервера" });
+    }
+
+    if (result.length === 0) {
+      return res.status(404).json({ message: "Продукт не найден" });
+    }
+
+    res.status(200).json(result[0]);
+  });
+});
+
+
 app.get("/users", (req, res) => {
   const query =
     "SELECT id, email, phoneNumber, passwordUser, nameUser, image FROM users";
