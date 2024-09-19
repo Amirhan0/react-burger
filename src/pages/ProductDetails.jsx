@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import HeaderMain from "../components/HeaderMain";
 
@@ -26,6 +26,19 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [id]);
 
+  const handleClick = (product) => {
+    localStorage.setItem(
+      "selectedProduct",
+      JSON.stringify({
+        id: product.id,
+        name: product.nameProduct,
+        price: product.price,
+      })
+    );
+
+    navigate("/cart");
+  };
+
   if (loading) return <div className="text-white">Загрузка...</div>;
 
   if (error) return <div className="text-white">{error}</div>;
@@ -51,7 +64,10 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
-        <button className="bg-custom-gradient text-black px-14 py-6 mt-15 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300">
+        <button
+          onClick={() => handleClick(product)}
+          className="bg-custom-gradient text-black px-14 py-6 mt-15 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300"
+        >
           <img src="/Basket.svg" className="inline w-6 mr-2" />
           Добавить в корзину
         </button>
