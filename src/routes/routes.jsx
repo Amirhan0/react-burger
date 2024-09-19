@@ -11,7 +11,7 @@ import Favorite from "../pages/Favorite";
 import Checkout from "../pages/Checkout";
 import AddProducts from "../pages/AddProduct";
 import ProductDetails from "../pages/ProductDetails";
-ProductDetails;
+import Cart from "../pages/Cart";
 export default function AppRouter() {
   return (
     <Routes>
@@ -27,6 +27,7 @@ export default function AppRouter() {
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/addproducts" element={<AddProducts />} />
       <Route path="/products/:id" element={<ProductDetails />} />
+      <Route path="/cart" element={<Cart />} />
     </Routes>
   );
 }

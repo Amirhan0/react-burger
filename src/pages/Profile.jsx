@@ -43,6 +43,11 @@ const Profile = () => {
     }
   }, []);
 
+  function logout(link) {
+    localStorage.clear();
+    navigate(link);
+  }
+
   return (
     <>
       <div className="bg-[#18171C] h-screen">
@@ -111,7 +116,7 @@ const Profile = () => {
           <div className="bg-[#22222A] mt-3 rounded-xl">
             <div className="p-4 flex justify-between items-center gap-3">
               <img src="/SignOut.svg" className="w-10 h-10" />
-              <div className="flex flex-col justify-center flex-1">
+              <div className="flex flex-col justify-center flex-1" onClick={() => logout('/')}>
                 <span className="text-white font-bold text-lg">Выйти</span>
                 <p className="text-[#6A6A6E] text-sm">Но лучше не выходите</p>
               </div>
