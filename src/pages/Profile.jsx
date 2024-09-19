@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import HeaderMain from "../components/HeaderMain";
-
+import { useEffect, useState } from "react";
 const Profile = () => {
   const ProfileList = [
     {
@@ -33,6 +33,16 @@ const Profile = () => {
   function navigation(link) {
     navigate(link);
   }
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+
+    if (userData) {
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+    }
+  }, []);
+
   return (
     <>
       <div className="bg-[#18171C] h-screen">
@@ -47,14 +57,20 @@ const Profile = () => {
           <div className="bg-[#22222A] mt-10 rounded-xl">
             <div className="p-6 flex items-center justify-between">
               <div>
-                <p className="text-white">photo</p>
+                {user && (
+                  <img
+                    src={user.image}
+                    alt={user.nameUser}
+                    className="w-10 h-10 rounded-full"
+                  />
+                )}
               </div>
               <div>
                 <h1 className="text-xl text-white font-bold">
-                  Гасанов Амирхан
+                  {user ? `${user.nameUser}` : "Пользователь..."}
                 </h1>
                 <span className="text-xs text-[#6A6A6E]">
-                  amirgasanov@gmail.com
+                  {user ? `${user.email}` : "Email..."}
                 </span>
               </div>
               <img src="/Pencil.svg" className="w-8 h-8" alt="" />

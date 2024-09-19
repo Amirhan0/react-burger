@@ -22,7 +22,8 @@ export default function Authorization() {
         email,
         passwordUser: password,
       });
-      console.log("Успешный вход", response.data);
+      const { user } = response.data;
+      localStorage.setItem("user", JSON.stringify(user));
       setErrorMessage("");
       navigate("/home");
     } catch (error) {

@@ -63,7 +63,6 @@ app.post("/update-profile", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { email, passwordUser } = req.body;
-  console.log("Полученные данные:", email, passwordUser);
 
   const query = "SELECT * FROM users WHERE email = ? AND passwordUser = ?";
 
@@ -73,13 +72,20 @@ app.post("/login", (req, res) => {
       return res.status(500).json({ message: "Ошибка сервера" });
     }
 
-    console.log("Результат запроса:", result);
-
     if (result.length === 0) {
       return res.status(401).json({ message: "Неправильный email или пароль" });
     }
 
-    res.status(200).json({ message: "Успешный вход в свой профиль" });
+    const user = result[0];
+    res.status(200).json({
+      message: "Успешный вход в свой профиль",
+      user: {
+        id: user.id,
+        email: user.email,
+        nameUser: user.nameUser,
+        image: user.image,
+      },
+    });
   });
 });
 
