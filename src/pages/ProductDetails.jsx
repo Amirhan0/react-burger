@@ -27,15 +27,22 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleClick = (product) => {
-    localStorage.setItem(
-      "selectedProduct",
-      JSON.stringify({
-        id: product.id,
-        name: product.nameProduct,
-        price: product.price,
-      })
-    );
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const userId = storedUser ? storedUser.id : null;
+    const cartProducts =
+      JSON.parse(localStorage.getItem("selectedProducts")) || [];
 
+    const newProducts = {
+      userId: userId,
+      id: product.id,
+      name: product.nameProduct,
+      image: product.image,
+      price: product.price,
+    };
+
+    const updatedCart = [...cartProducts, newProducts];
+
+    localStorage.setItem("selectedProducts", JSON.stringify(updatedCart));
     navigate("/cart");
   };
 

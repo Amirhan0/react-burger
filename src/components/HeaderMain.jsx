@@ -36,7 +36,7 @@ const HeaderMain = () => {
         <div className="flex items-center  p-2 rounded-full">
           <div
             className="w-14 h-14 bg-[#B28C2E] flex items-center justify-center rounded-lg"
-            onClick={() => navigation("/checkout")}
+            onClick={() => navigation("/")}
           >
             <img
               src="/cart.svg"
