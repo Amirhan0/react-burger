@@ -127,6 +127,11 @@ app.post("/categoryes", (req, res) => {
   });
 });
 
+
+app.post('/checkout', (req,res)=> {
+  
+})
+
 //////////////////////-- get --///////////////////////////////////////////
 app.get("/categoryes", (req, res) => {
   const query = "SELECT categoryName, imageCategory FROM category";

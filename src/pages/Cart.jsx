@@ -10,9 +10,9 @@ const Cart = () => {
     const selectProduct = localStorage.getItem("selectedProducts");
 
     if (selectProduct) {
-      const parsedProducts = JSON.parse(selectProduct).map(product => ({
+      const parsedProducts = JSON.parse(selectProduct).map((product) => ({
         ...product,
-        quantity: 1, // Изначально устанавливаем количество 1 для каждого товара
+        quantity: 1,
       }));
       setProducts(parsedProducts);
     }
@@ -20,22 +20,22 @@ const Cart = () => {
 
   const handleIncreaseQuantity = (index) => {
     const updatedProducts = [...products];
-    updatedProducts[index].quantity += 1; // Увеличиваем количество товара
+    updatedProducts[index].quantity += 1;
     setProducts(updatedProducts);
   };
 
   const handleDecreaseQuantity = (index) => {
     const updatedProducts = [...products];
     if (updatedProducts[index].quantity > 1) {
-      updatedProducts[index].quantity -= 1; // Уменьшаем количество товара
+      updatedProducts[index].quantity -= 1;
       setProducts(updatedProducts);
     }
   };
 
   const handleRemoveProduct = (index) => {
-    const updatedProducts = products.filter((_, i) => i !== index); // Удаляем товар из корзины
+    const updatedProducts = products.filter((_, i) => i !== index);
     setProducts(updatedProducts);
-    localStorage.setItem("selectedProducts", JSON.stringify(updatedProducts)); // Обновляем данные в localStorage
+    localStorage.setItem("selectedProducts", JSON.stringify(updatedProducts));
   };
 
   return (
@@ -64,7 +64,9 @@ const Cart = () => {
                     >
                       -
                     </button>
-                    <span className="text-lg font-semibold">{product.quantity}</span>
+                    <span className="text-lg font-semibold">
+                      {product.quantity}
+                    </span>
                     <button
                       className="bg-custom-gradient text-black px-4 py-2 rounded-lg ml-2"
                       onClick={() => handleIncreaseQuantity(index)}
