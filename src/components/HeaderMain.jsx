@@ -58,18 +58,6 @@ const HeaderMain = () => {
         </div>
         <div className="flex items-center p-2 rounded-full">
           <div
-            className={`flex items-center justify-center ${getIconClass("/favorite")}`}
-            onClick={() => navigation("/favorite")}
-          >
-            <img
-              src="/favorite.svg"
-              alt="Favorite"
-              className="w-8 h-8 sm:w-10 sm:h-10"
-            />
-          </div>
-        </div>
-        <div className="flex items-center p-2 rounded-full">
-          <div
             className={`flex items-center justify-center ${getIconClass("/profile")}`}
             onClick={() => navigation("/profile")}
           >

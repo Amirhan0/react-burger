@@ -7,7 +7,6 @@ import Success from "../pages/Success";
 import MainPage from "../components/MainPage";
 import Profile from "../pages/Profile";
 import Orders from "../pages/Orders";
-import Favorite from "../pages/Favorite";
 import Checkout from "../pages/Checkout";
 import AddProducts from "../pages/AddProduct";
 import ProductDetails from "../pages/ProductDetails";
@@ -23,7 +22,6 @@ export default function AppRouter() {
       <Route path="/home" element={<MainPage />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/orders" element={<Orders />} />
-      <Route path="/favorite" element={<Favorite />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/addproducts" element={<AddProducts />} />
       <Route path="/products/:id" element={<ProductDetails />} />

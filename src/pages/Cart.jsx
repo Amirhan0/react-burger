@@ -21,6 +21,10 @@ const Cart = () => {
   const handleIncreaseQuantity = (index) => {
     const updatedProducts = [...products];
     updatedProducts[index].quantity += 1;
+    localStorage.setItem(
+      `productQuantity_${updatedProducts[index].id}`,
+      updatedProducts[index].quantity.toString()
+    );
     setProducts(updatedProducts);
   };
 
@@ -28,6 +32,10 @@ const Cart = () => {
     const updatedProducts = [...products];
     if (updatedProducts[index].quantity > 1) {
       updatedProducts[index].quantity -= 1;
+      localStorage.setItem(
+        `productQuantity_${updatedProducts[index].id}`,
+        updatedProducts[index].quantity.toString()
+      );
       setProducts(updatedProducts);
     }
   };
@@ -87,34 +95,37 @@ const Cart = () => {
             <p className="text-white text-xl">Корзина пуста</p>
           )}
         </div>
-        {products.length > 0 && (
-          <div className="w-full max-w-3xl bg-[#333] rounded-lg p-6 mt-4">
-            <div className="flex justify-between text-white text-xl font-bold">
-              <span>Итого:</span>
-              <span>
-                ₸
-                {products.reduce(
-                  (total, product) => total + product.price * product.quantity,
-                  0
-                )}
-              </span>
-            </div>
-            <div className="mt-4 flex justify-between">
-              <button
-                className="bg-custom-gradient text-black px-8 py-4 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300"
-                onClick={() => navigate("/checkout")}
-              >
-                Перейти к оформлению
-              </button>
-              <button
-                className="bg-custom-gradient text-white px-8 py-4 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300"
-                onClick={() => navigate("/home")}
-              >
-                Вернуться назад
-              </button>
-            </div>
-          </div>
-        )}
+        {products.length > 0 &&
+          (() => {
+            const totalAmount = products.reduce(
+              (total, product) => total + product.price * product.quantity,
+              0
+            );
+            localStorage.setItem("totalAmount", totalAmount);
+
+            return (
+              <div className="w-full max-w-3xl bg-[#333] rounded-lg p-6 mt-4">
+                <div className="flex justify-between text-white text-xl font-bold">
+                  <span>Итого:</span>
+                  <span>₸{totalAmount}</span>
+                </div>
+                <div className="mt-4 flex justify-between">
+                  <button
+                    className="bg-custom-gradient text-black px-8 py-4 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300"
+                    onClick={() => navigate("/checkout")}
+                  >
+                    Перейти к оформлению
+                  </button>
+                  <button
+                    className="bg-custom-gradient text-white px-8 py-4 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300"
+                    onClick={() => navigate("/home")}
+                  >
+                    Вернуться назад
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
       </div>
     </>
   );

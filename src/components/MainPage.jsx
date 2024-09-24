@@ -1,4 +1,3 @@
-import Favorites from "./Favorites";
 import HeaderWelcome from "./HeaderWelcome";
 import Category from "./Category";
 import Products from "./Products";
@@ -8,7 +7,6 @@ const MainPage = () => {
     <>
       <div className="bg-[#111015] min-h-screen pb-24">
         <HeaderWelcome></HeaderWelcome>
-        <Favorites></Favorites>
         <Category></Category>
         <Products></Products>
         <HeaderMain></HeaderMain>

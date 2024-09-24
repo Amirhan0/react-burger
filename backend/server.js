@@ -3,6 +3,7 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const app = express();
 const port = 3001;
+
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -20,7 +21,8 @@ db.connect((err) => {
 
 app.use(cors());
 app.use(express.json());
-//////////////////////-- post --///////////////////////////////////////////
+
+// Регистрация пользователя
 app.post("/register", (req, res) => {
   const { email, phoneNumber, passwordUser } = req.body;
 
@@ -43,6 +45,7 @@ app.post("/register", (req, res) => {
   });
 });
 
+// Обновление профиля
 app.post("/update-profile", (req, res) => {
   const { id, nameUser, image } = req.body;
 
@@ -54,13 +57,14 @@ app.post("/update-profile", (req, res) => {
 
   db.query(query, [nameUser, image, id], (err, result) => {
     if (err) {
-      console.log("Ошибка при обновление профиля", err);
+      console.log("Ошибка при обновлении профиля", err);
       return res.status(500).json({ message: "Ошибка при обновлении профиля" });
     }
     res.status(200).json({ message: "Профиль успешно обновлен!" });
   });
 });
 
+// Вход в систему
 app.post("/login", (req, res) => {
   const { email, passwordUser } = req.body;
 
@@ -89,27 +93,29 @@ app.post("/login", (req, res) => {
   });
 });
 
+// Добавление продукта
 app.post("/products", (req, res) => {
   const { nameProduct, description, price, weight, image } = req.body;
 
   const query =
-    "INSERT INTO products (nameProduct, description, price, weight, image) VALUES (?,?,?,?,?)";
+    "INSERT INTO products (nameProduct, description, price, weight, image) VALUES (?, ?, ?, ?, ?)";
 
   db.query(
     query,
     [nameProduct, description, price, weight, image],
     (err, result) => {
       if (err) {
-        console.log("Ошибка при добавление товара", err);
+        console.log("Ошибка при добавлении товара", err);
         return res
           .status(500)
-          .json({ message: "Ошибка при добавление товара" });
+          .json({ message: "Ошибка при добавлении товара" });
       }
       res.status(200).json({ message: "Товар успешно добавлен" });
     }
   );
 });
 
+// Добавление категории
 app.post("/categoryes", (req, res) => {
   const { categoryName, imageCategory } = req.body;
 
@@ -118,21 +124,72 @@ app.post("/categoryes", (req, res) => {
 
   db.query(query, [categoryName, imageCategory], (err, result) => {
     if (err) {
-      console.log("Ошибка при добавление категории", err);
+      console.log("Ошибка при добавлении категории", err);
       return res
         .status(500)
-        .json({ message: "Ошибка при добавлении катгеории" });
+        .json({ message: "Ошибка при добавлении категории" });
     }
-    res.status(200).json({ message: "Товар успешно добавлен" });
+    res.status(200).json({ message: "Категория успешно добавлена" });
   });
 });
 
+// Оформление заказа
+// Оформление заказа
+app.post("/orders", (req, res) => {
+  const { userId, totalPrice, paymentMethod, address, nameUser, items } =
+    req.body;
 
-app.post('/checkout', (req,res)=> {
-  
-})
+  // Сначала добавляем запись в таблицу orders
+  const orderQuery =
+    "INSERT INTO orders (userId, totalPrice, paymentMethod,nameUser, address) VALUES (?, ?, ?, ?, ?)";
 
-//////////////////////-- get --///////////////////////////////////////////
+  db.query(
+    orderQuery,
+    [userId, totalPrice, paymentMethod, address, nameUser],
+    (err, result) => {
+      if (err) {
+        console.log("Ошибка при добавлении данных в orders", err);
+        return res
+          .status(500)
+          .json({ message: "Ошибка при добавлении данных в orders" });
+      }
+
+      // Получаем ID последнего заказа для связи с его элементами
+      const orderId = result.insertId;
+
+      // Записываем товары в orders_items
+      const orderItemsQueries = items.map((item) => {
+        const query =
+          "INSERT INTO orders_items (userId, productId, price, quantity) VALUES (?, ?, ?, ?)";
+        return new Promise((resolve, reject) => {
+          db.query(
+            query,
+            [userId, item.productId, item.price, item.quantity],
+            (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            }
+          );
+        });
+      });
+
+      // Используем Promise.all для ожидания завершения всех записей в orders_items
+      Promise.all(orderItemsQueries)
+        .then(() => res.status(200).json({ message: "Заказ успешно оформлен" }))
+        .catch((err) => {
+          console.log("Ошибка при добавлении элементов заказа:", err);
+          res
+            .status(500)
+            .json({ message: "Ошибка при добавлении элементов заказа" });
+        });
+    }
+  );
+});
+
+// Получение категорий
 app.get("/categoryes", (req, res) => {
   const query = "SELECT categoryName, imageCategory FROM category";
 
@@ -147,6 +204,7 @@ app.get("/categoryes", (req, res) => {
   });
 });
 
+// Получение продуктов
 app.get("/products", (req, res) => {
   const query =
     "SELECT id, nameProduct, description, price, weight, image FROM products";
@@ -160,6 +218,7 @@ app.get("/products", (req, res) => {
   });
 });
 
+// Получение продукта по ID
 app.get("/products/:id", (req, res) => {
   const { id } = req.params;
 
@@ -179,20 +238,23 @@ app.get("/products/:id", (req, res) => {
   });
 });
 
-
+// Получение пользователей
 app.get("/users", (req, res) => {
   const query =
     "SELECT id, email, phoneNumber, passwordUser, nameUser, image FROM users";
 
   db.query(query, (err, result) => {
     if (err) {
-      console.log("Ошибка при получение пользователя");
-      return;
+      console.log("Ошибка при получении пользователей:", err);
+      return res
+        .status(500)
+        .json({ message: "Ошибка при получении пользователей" });
     }
     res.status(200).json(result);
   });
 });
 
+// Запуск сервера
 app.listen(port, () => {
-  console.log("Сервер запущен");
+  console.log("Сервер запущен на порту", port);
 });
