@@ -1,30 +1,31 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import HeaderMain from "../components/HeaderMain";
-
+import { useNavigate } from "react-router-dom";
 const Checkout = () => {
+  const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [totalAmount, setTotalAmount] = useState(0);
   const [nameUser, setNameUser] = useState("");
   const [emailUser, setEmailUser] = useState("");
   const [phoneUser, setPhoneUser] = useState("");
   const [addressUser, setAddressUser] = useState("");
-  const [cityUser, setCityUser] = useState("");
   const [user, setUser] = useState({});
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const amount = localStorage.getItem("totalAmount");
-    const productIds = JSON.parse(localStorage.getItem("selectedProducts"));
+    const selectedProducts = JSON.parse(
+      localStorage.getItem("selectedProducts")
+    );
     const storedUser = JSON.parse(localStorage.getItem("user"));
 
     if (amount) {
-      const parsedAmount = JSON.parse(amount);
-      setTotalAmount(parsedAmount);
+      setTotalAmount(JSON.parse(amount));
     }
 
-    if (productIds) {
-      setProducts(productIds);
+    if (selectedProducts) {
+      setProducts(selectedProducts);
     }
 
     if (storedUser) {
@@ -35,64 +36,45 @@ const Checkout = () => {
     }
   }, []);
 
-  const handleOrderItems = async () => {
-    const orderItems = products.map((product) => ({
-      productId: product.id,
-      userId: product.userId,
-      quantity: product.quantity,
-      totalAmount,
-    }));
-
+  const handleOrder = async () => {
     const orderData = {
-      name: nameUser,
-      email: emailUser,
-      phone: phoneUser,
-      address: addressUser,
-      city: cityUser,
+      userId: user.id,
+      totalPrice: totalAmount,
       paymentMethod,
-      items: orderItems,
-      totalAmount,
+      address: addressUser,
+      nameUser,
     };
 
     try {
-      const response = await axios.post(
+      const orderResponse = await axios.post(
         "http://localhost:3001/orders",
         orderData
       );
-      console.log("Order Response:", response.data);
+      const orderId = orderResponse.data.orderId;
+
+      const orderItemsData = products.map((product) => ({
+        userId: user.id,
+        productId: product.id,
+        price: product.price,
+        quantity: product.quantity || 1,
+      }));
+
+      console.log("Данные для отправки в orders-items:", {
+        orderId,
+        orderItemsData,
+      });
+
+      await axios.post("http://localhost:3001/orders-items", {
+        orderId,
+        items: orderItemsData,
+      });
+
+      alert("Заказ успешно оформлен!");
+      navigate("/orders");
     } catch (error) {
-      console.error("Ошибка при отправке заказа:", error);
+      console.error("Ошибка при оформлении заказа:", error);
+      alert("Произошла ошибка при оформлении заказа.");
     }
-  };
-
-  const handleOrder = async () => {
-    const orderItems = products.map((product) => ({
-      userId: user.id,
-      totalAmount,
-    }));
-
-    const orderData = {
-      name: nameUser,
-      email: emailUser,
-      phone: phoneUser,
-      items: orderItems,
-    };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/orders-items",
-        orderData
-      );
-      console.log("Order Response:", response.data);
-    } catch (error) {
-      console.error("Ошибка при отправке заказа:", error);
-    }
-  };
-
-  const handleCheckout = async () => {
-    await handleOrderItems();
-    await handleOrder();
-    alert("Заказ успешно оформлен!");
   };
 
   return (
@@ -135,13 +117,6 @@ const Checkout = () => {
               value={addressUser}
               onChange={(e) => setAddressUser(e.target.value)}
               placeholder="Адрес доставки"
-              className="w-full p-3 rounded-lg bg-[#444] placeholder-gray-400 text-white focus:outline-none"
-            />
-            <input
-              type="text"
-              value={cityUser}
-              onChange={(e) => setCityUser(e.target.value)}
-              placeholder="Город"
               className="w-full p-3 rounded-lg bg-[#444] placeholder-gray-400 text-white focus:outline-none"
             />
           </div>
@@ -201,7 +176,7 @@ const Checkout = () => {
             Итого: ₸{totalAmount ? `${totalAmount}` : "Загрузка"}
           </span>
           <button
-            onClick={handleCheckout}
+            onClick={handleOrder}
             className="bg-custom-gradient text-black px-8 py-4 rounded-lg font-bold hover:bg-[#dba10b] transition duration-300"
           >
             Оформить заказ

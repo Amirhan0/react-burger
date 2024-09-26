@@ -134,18 +134,16 @@ app.post("/categoryes", (req, res) => {
 });
 
 // Оформление заказа
-// Оформление заказа
 app.post("/orders", (req, res) => {
-  const { userId, totalPrice, paymentMethod, address, nameUser, items } =
-    req.body;
+  const { userId, totalPrice, paymentMethod, address, nameUser } = req.body;
 
-  // Сначала добавляем запись в таблицу orders
+  // SQL-запрос для добавления заказа
   const orderQuery =
-    "INSERT INTO orders (userId, totalPrice, paymentMethod,nameUser, address) VALUES (?, ?, ?, ?, ?)";
+    "INSERT INTO orders (userId, totalPrice, paymentMethod, nameUser, address) VALUES (?, ?, ?, ?, ?)";
 
   db.query(
     orderQuery,
-    [userId, totalPrice, paymentMethod, address, nameUser],
+    [userId, totalPrice, paymentMethod, nameUser, address],
     (err, result) => {
       if (err) {
         console.log("Ошибка при добавлении данных в orders", err);
@@ -154,39 +152,72 @@ app.post("/orders", (req, res) => {
           .json({ message: "Ошибка при добавлении данных в orders" });
       }
 
-      // Получаем ID последнего заказа для связи с его элементами
+      // Возвращаем ID созданного заказа
       const orderId = result.insertId;
-
-      // Записываем товары в orders_items
-      const orderItemsQueries = items.map((item) => {
-        const query =
-          "INSERT INTO orders_items (userId, productId, price, quantity) VALUES (?, ?, ?, ?)";
-        return new Promise((resolve, reject) => {
-          db.query(
-            query,
-            [userId, item.productId, item.price, item.quantity],
-            (err) => {
-              if (err) {
-                reject(err);
-              } else {
-                resolve();
-              }
-            }
-          );
-        });
-      });
-
-      // Используем Promise.all для ожидания завершения всех записей в orders_items
-      Promise.all(orderItemsQueries)
-        .then(() => res.status(200).json({ message: "Заказ успешно оформлен" }))
-        .catch((err) => {
-          console.log("Ошибка при добавлении элементов заказа:", err);
-          res
-            .status(500)
-            .json({ message: "Ошибка при добавлении элементов заказа" });
-        });
+      res.status(200).json({ orderId });
     }
   );
+});
+
+app.post("/orders-items", (req, res) => {
+  const { items } = req.body;
+
+  console.log("Полученные данные для orders-items:", { items });
+
+  if (!items || items.length === 0) {
+    return res
+      .status(400)
+      .json({ message: "Не все обязательные данные переданы" });
+  }
+
+  const orderItemsQueries = items.map((item) => {
+    const query =
+      "INSERT INTO orders_items ( userId, productId, price, quantity) VALUES (?, ?, ?, ?)";
+
+    // Логируем каждый элемент заказа
+    console.log("Элемент заказа:", item);
+
+    return new Promise((resolve, reject) => {
+      db.query(
+        query,
+        [item.userId, item.productId, item.price, item.quantity],
+        (err) => {
+          if (err) {
+            console.log("Ошибка при добавлении элемента заказа:", err);
+            reject(err);
+          } else {
+            resolve();
+          }
+        }
+      );
+    });
+  });
+
+  Promise.all(orderItemsQueries)
+    .then(() =>
+      res.status(200).json({ message: "Элементы заказа успешно добавлены" })
+    )
+    .catch((err) => {
+      console.log("Ошибка при добавлении элементов заказа:", err);
+      res
+        .status(500)
+        .json({ message: "Ошибка при добавлении элементов заказа" });
+    });
+});
+
+app.get("/orders-items/:userId", (req, res) => {
+  const { userId } = req.params;
+
+  const query = "SELECT * FROM orders_items WHERE id = ?";
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error("Ошибка при получении заказов:", err);
+      return res.status(500).json({ message: "Ошибка при получении заказов" });
+    }
+
+    res.status(200).json(results);
+  });
 });
 
 // Получение категорий
